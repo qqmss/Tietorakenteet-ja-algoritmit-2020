@@ -12,31 +12,60 @@ package btree8;
 public class BinaryTree {
 
     private Node root;
-    public static BinaryTree found; // findWithPreOrder()-operaation apurakenne
-
+    
     public BinaryTree(String rootValue) {
         root = new Node(rootValue);
     }
-
+    public BinaryTree(){
+        root = null;
+    }
     /*public BinaryTree(String rootValue, BinaryTree left, BinaryTree right){
         root = new Node(rootValue, left, right);
     } */
-
-    public String find(String s){
-        if (root == null) {
-            return null;
-        }
-        if (s.equals(root.getData())) {
-            return root.getData();
-        }
-        if (root.left() != null){
-            String ss = root.left().find(s);
-            if(ss != null){
-                return ss;
+    
+    public void insert(String aData){
+        if(root != null){
+            switch (Integer.signum(root.getData().compareTo(aData))) {
+                case -1:
+                    if(root.left() == null){
+                        root.setLeft(new BinaryTree(aData));
+                    } else {
+                        root.left().insert(aData);
+                    }
+                    break;
+                case 0:
+                    return;
+                    //break;
+                case 1:
+                    if(root.right() == null){
+                        root.setRight(new BinaryTree(aData));
+                    } else {
+                        root.right().insert(aData);
+                    }
+                    break;
             }
+        } else {
+            root = new Node(aData);
         }
-        if (root.right() != null){
-            return root.right().find(s);
+    }
+    
+    public BinaryTree find(String aData){
+        if(root != null){
+            switch (Integer.signum(root.getData().compareTo(aData))) {
+                case -1:
+                    if(root.left() != null){
+                        return root.left().find(aData);
+                    }
+                    break;
+                case 0:
+                    return this;
+                //break;
+                case 1:
+                    if(root.right() != null){
+                        return root.right().find(aData);
+                    }
+                    break;
+            }
         }
         return null;
     }
@@ -51,35 +80,7 @@ public class BinaryTree {
         }
 
     }
-
-    // löydetty alipuu asetetaan staattiseen muuttujaan found
-    public void findWithPreOrder() {
-
-        if (root != null) {
-            System.out.print(root.getData()+ ": muokkaatko tätä?");
-            if (root.left()== null)
-                System.out.print(" (vasemmalla tilaa)");
-            if (root.right() == null)
-                System.out.println(" (oikealla tilaa)");
-            char select = Lue.merkki();
-            if (select =='k') {
-                found = this;
-                return;
-            }
-            if (found==null && root.left() != null) // pääseekö vasemmalle?
-                root.left().findWithPreOrder();
-            if (found== null && root.right() != null) // pääseekö oikealle?
-                root.right().findWithPreOrder();
-        }
-
-    }
-    public void setNotFound() {
-        found = null;
-    }
-    public static BinaryTree getFound() {
-        return found;
-    }
-
+  
     public void setLeft(BinaryTree tree) {
         root.setLeft(tree);
     }
